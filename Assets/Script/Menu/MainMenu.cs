@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using YARG.Input;
@@ -92,12 +92,19 @@ namespace YARG.UI
 
         private void Update()
         {
-            if (!isUpdateShown && UpdateChecker.Instance.IsOutOfDate)
+            try
             {
-                isUpdateShown = true;
+                if (updateObject != null && !isUpdateShown && UpdateChecker.Instance.IsOutOfDate)
+                {
+                    isUpdateShown = true;
 
-                updateObject.gameObject.gameObject.SetActive(true);
+                    updateObject.gameObject.gameObject.SetActive(true);
+                }
+            } catch
+            {
+
             }
+
         }
 
         private void HideAll()

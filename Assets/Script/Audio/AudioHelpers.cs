@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace YARG.Audio
@@ -14,8 +14,8 @@ namespace YARG.Audio
 
         public static readonly IList<string> SfxPaths = new[]
         {
-            "note_miss", "starpower_award", "starpower_gain", "starpower_deploy", "starpower_release", "clap", "star",
-            "star_gold",
+            "note_miss.ogg", "starpower_award.ogg", "starpower_gain.ogg", "starpower_deploy.ogg", "starpower_release.ogg", "clap.ogg", "star.wav",
+            "star_gold.wav",
         };
 
         public static readonly IList<double> SfxVolume = new[]

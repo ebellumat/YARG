@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using ManagedBass;
 using ManagedBass.Fx;
 using ManagedBass.Mix;
 using UnityEngine;
+using UnityEngine.Networking;
 using YARG.Song;
 using YARG.UI;
 using DeviceType = ManagedBass.DeviceType;
@@ -16,6 +18,8 @@ namespace YARG.Audio.BASS
 {
     public class BassAudioManager : MonoBehaviour, IAudioManager
     {
+
+        const string permission = UnityEngine.Android.Permission.ExternalStorageRead;
         public bool UseStarpowerFx { get; set; }
         public bool IsChipmunkSpeedup { get; set; }
 
@@ -81,6 +85,11 @@ namespace YARG.Audio.BASS
 
         private void Awake()
         {
+            if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(permission))
+            {
+                UnityEngine.Android.Permission.RequestUserPermission(permission);
+            }
+
             SupportedFormats = new[]
             {
                 ".ogg", ".mogg", ".wav", ".mp3", ".aiff", ".opus",
@@ -92,6 +101,7 @@ namespace YARG.Audio.BASS
 
             _opusHandle = 0;
         }
+
 
         public void Initialize()
         {
@@ -135,7 +145,8 @@ namespace YARG.Audio.BASS
                 return;
             }
 
-            LoadSfx();
+            StartCoroutine(CopySfxToPersistentDataPath());
+
 
             Debug.Log($"BASS Successfully Initialized");
             ToastManager.ToastInformation($"BASS Successfully Initialized");
@@ -148,6 +159,41 @@ namespace YARG.Audio.BASS
             Debug.Log($"Playback Buffer Length: {Bass.PlaybackBufferLength}");
 
             Debug.Log($"Current Device: {Bass.GetDeviceInfo(Bass.CurrentDevice).Name}");
+        }
+
+        IEnumerator CopySfxToPersistentDataPath()
+        {
+            string fromPath = Application.streamingAssetsPath + "/sfx/";
+            string toPath = Application.persistentDataPath + "/sfx/";
+
+            // Use the audio file names from AudioHelpers
+            foreach (string fileName in AudioHelpers.SfxPaths)
+            {
+                string fullFromPath = fromPath + fileName;
+                string fullToPath = toPath + fileName;
+
+                using (WWW www = new WWW(fullFromPath))
+                {
+                    yield return www; // Wait for download to complete
+
+                    if (!string.IsNullOrEmpty(www.error))
+                    {
+                        string error = $"Failed to copy SFX! {fullFromPath}, Error: {www.error}";
+                        Debug.LogError(error);
+                        ToastManager.ToastInformation(error);
+                        continue;
+                    }
+                    else
+                    {
+                        byte[] results = www.bytes;
+                        File.WriteAllBytes(fullToPath, results);
+                        Debug.Log($"Copied {fileName} to persistent data path.");
+                    }
+                }
+            }
+
+            // After all files are copied, load them
+            LoadSfx();
         }
 
         public void Unload()
@@ -206,44 +252,41 @@ namespace YARG.Audio.BASS
         public void LoadSfx()
         {
             Debug.Log("Loading SFX");
+            ToastManager.ToastInformation("Loading SFX");
 
             _sfxSamples = new ISampleChannel[AudioHelpers.SfxPaths.Count];
 
-            string sfxFolder = Path.Combine(Application.streamingAssetsPath, "sfx");
+            string baseFolder = Application.platform == RuntimePlatform.Android
+        ?   Application.persistentDataPath 
+        : Application.streamingAssetsPath;
+
+            string sfxFolder = Path.Combine(baseFolder, "sfx");
 
             foreach (string sfxFile in AudioHelpers.SfxPaths)
             {
                 string sfxPath = Path.Combine(sfxFolder, sfxFile);
 
-                foreach (string format in SupportedFormats)
-                {
-                    if (!File.Exists($"{sfxPath}{format}")) continue;
-
-                    // Append extension to path (e.g sfx/boop becomes sfx/boop.ogg)
-                    sfxPath += format;
-                    break;
-                }
-
-                if (!File.Exists(sfxPath))
-                {
-                    Debug.LogError($"SFX path does not exist! {sfxPath}");
-                    continue;
-                }
-
                 var sfxSample = AudioHelpers.GetSfxFromName(sfxFile);
 
                 var sfx = new BassSampleChannel(this, sfxPath, 8, sfxSample);
+
                 if (sfx.Load() != 0)
                 {
-                    Debug.LogError($"Failed to load SFX! {sfxPath}");
-                    Debug.LogError($"Bass Error: {Bass.LastError}");
+                    string error = $"Failed to load SFX! {sfxPath}";
+                    Debug.LogError(error);
+                    ToastManager.ToastInformation(error);
+                    string bassError = $"Bass Error: {Bass.LastError}";
+                    Debug.LogError(bassError);
+                    ToastManager.ToastInformation(bassError);
                     continue;
                 }
 
                 _sfxSamples[(int) sfxSample] = sfx;
                 Debug.Log($"Loaded {sfxFile}");
+                ToastManager.ToastInformation($"Loaded {sfxFile}");
             }
 
+            ToastManager.ToastInformation("Finished loading SFX");
             Debug.Log("Finished loading SFX");
         }
 
@@ -255,6 +298,7 @@ namespace YARG.Audio.BASS
             _mixer = new BassStemMixer(this);
             if (!_mixer.Create())
             {
+                ToastManager.ToastInformation($"Failed to create mixer: {Bass.LastError}");
                 throw new Exception($"Failed to create mixer: {Bass.LastError}");
             }
 
