@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -133,11 +133,18 @@ namespace YARG.UI
         /// <param name="text">Text of the toast.</param>
         public static void ToastInformation(string text)
         {
-            toastQueue.Enqueue(new Toast(ToastType.Information, text));
-            if (Instance.queueChecker == null)
+            try
             {
-                Instance.queueChecker = Instance.StartCoroutine(Instance.CheckQueue());
+                toastQueue.Enqueue(new Toast(ToastType.Information, text));
+                if (Instance.queueChecker == null)
+                {
+                    Instance.queueChecker = Instance.StartCoroutine(Instance.CheckQueue());
+                }
+            } catch
+            {
+
             }
+           
         }
 
         /// <summary>

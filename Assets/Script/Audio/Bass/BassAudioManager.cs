@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +9,7 @@ using ManagedBass.Fx;
 using ManagedBass.Mix;
 using UnityEngine;
 using YARG.Song;
+using YARG.UI;
 using DeviceType = ManagedBass.DeviceType;
 
 namespace YARG.Audio.BASS
@@ -95,8 +96,12 @@ namespace YARG.Audio.BASS
         public void Initialize()
         {
             Debug.Log("Initializing BASS...");
+#if !UNITY_EDITOR && UNITY_ANDROID
+    string opusLibDirectory = "bassopus";
+#else
             string bassPath = GetBassDirectory();
             string opusLibDirectory = Path.Combine(bassPath, "bassopus");
+#endif
 
             _opusHandle = Bass.PluginLoad(opusLibDirectory);
             Bass.Configure(Configuration.IncludeDefaultDevice, true);
@@ -124,6 +129,8 @@ namespace YARG.Audio.BASS
             if (!Bass.Init(-1, 44100, DeviceInitFlags.Default | DeviceInitFlags.Latency, IntPtr.Zero))
             {
                 Debug.LogError("Failed to initialize BASS");
+                ToastManager.ToastInformation("Failed to initialize BASS");
+                ToastManager.ToastInformation($"Bass Error: {Bass.LastError}");
                 Debug.LogError($"Bass Error: {Bass.LastError}");
                 return;
             }
@@ -131,6 +138,7 @@ namespace YARG.Audio.BASS
             LoadSfx();
 
             Debug.Log($"BASS Successfully Initialized");
+            ToastManager.ToastInformation($"BASS Successfully Initialized");
             Debug.Log($"BASS: {Bass.Version}");
             Debug.Log($"BASS.FX: {BassFx.Version}");
             Debug.Log($"BASS.Mix: {BassMix.Version}");
@@ -595,15 +603,19 @@ namespace YARG.Audio.BASS
 
         private static string GetBassDirectory()
         {
+            // For Android, return an empty string
+#if !UNITY_EDITOR && UNITY_ANDROID
+    return string.Empty;
+#endif
+
             string pluginDirectory = Path.Combine(Application.dataPath, "Plugins");
 
-            // Locate windows directory
-            // Checks if running on 64 bit and sets the path accordingly
+            // Check if running on 64 bit and sets the path accordingly
 #if !UNITY_EDITOR && UNITY_STANDALONE_WIN
 #if UNITY_64
-			pluginDirectory = Path.Combine(pluginDirectory, "x86_64");
+    pluginDirectory = Path.Combine(pluginDirectory, "x86_64");
 #else
-			pluginDirectory = Path.Combine(pluginDirectory, "x86");
+    pluginDirectory = Path.Combine(pluginDirectory, "x86");
 #endif
 #endif
 
@@ -616,12 +628,14 @@ namespace YARG.Audio.BASS
 #if UNITY_EDITOR_WIN
             pluginDirectory = Path.Combine(pluginDirectory, "Windows/x86_64");
 #elif UNITY_EDITOR_OSX
-			pluginDirectory = Path.Combine(pluginDirectory, "Mac");
+    pluginDirectory = Path.Combine(pluginDirectory, "Mac");
 #elif UNITY_EDITOR_LINUX
-			pluginDirectory = Path.Combine(pluginDirectory, "Linux/x86_64");
+    pluginDirectory = Path.Combine(pluginDirectory, "Linux/x86_64");
 #endif
 
             return pluginDirectory;
         }
+
+
     }
 }
