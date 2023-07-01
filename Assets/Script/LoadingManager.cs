@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -74,14 +74,14 @@ namespace YARG
         public void QueueSongRefresh(bool fast)
         {
             Queue(async () => { await ScanSongFolders(fast); });
-            QueueSongSort();
+            // QueueSongSort();
         }
 
         public void QueueSongFolderRefresh(string path)
         {
             // Refreshes 1 folder (called when clicking "Refresh" on a folder in settings)
             Queue(async () => { await ScanSongFolder(path, false); });
-            QueueSongSort();
+            // QueueSongSort();
         }
 
         public void QueueSongSort()

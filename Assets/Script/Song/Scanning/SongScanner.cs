@@ -196,9 +196,7 @@ namespace YARG.Song
 
         private void AssignFoldersToThreads()
         {
-            var drives = DriveInfo.GetDrives();
-
-            var driveFolders = drives.ToDictionary(drive => drive, _ => new List<CacheFolder>());
+            int threadIndex = 0;
 
             foreach (var folder in _songFolders)
             {
@@ -208,29 +206,7 @@ namespace YARG.Song
                     continue;
                 }
 
-                var drive = drives.FirstOrDefault(d => folder.Folder.StartsWith(d.RootDirectory.Name));
-                if (drive == null)
-                {
-                    Debug.LogError($"Folder {folder} is not on a drive");
-                    continue;
-                }
-
-                driveFolders[drive].Add(folder);
-            }
-
-            int threadIndex = 0;
-            using var enumerator = driveFolders.GetEnumerator();
-
-            while (enumerator.MoveNext() && enumerator.Current.Key is not null)
-            {
-                // No folders for this drive
-                if (enumerator.Current.Value.Count == 0)
-                {
-                    continue;
-                }
-
-                // Add every folder from this drive to the thread
-                enumerator.Current.Value.ForEach(x => _scanThreads[threadIndex].AddFolder(x));
+                _scanThreads[threadIndex].AddFolder(folder);
 
                 threadIndex++;
 
@@ -241,13 +217,10 @@ namespace YARG.Song
             }
         }
 
+
         private async UniTask WriteBadSongs()
         {
-#if UNITY_EDITOR
             string badSongsPath = Path.Combine(PathHelper.PersistentDataPath, "badsongs.txt");
-#else
-			string badSongsPath = Path.Combine(PathHelper.ExecutablePath, "badsongs.txt");
-#endif
 
             await using var stream = new FileStream(badSongsPath, FileMode.Create, FileAccess.Write);
             await using var writer = new StreamWriter(stream);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -158,7 +158,7 @@ namespace YARG.Song
         public static async UniTask DownloadSources(Action<string> updateText)
         {
             // Create the sources folder if it doesn't exist
-            Directory.CreateDirectory(SourcesFolder);
+            // Directory.CreateDirectory(SourcesFolder);
 
             // Look for the current version
             updateText("Checking version...");
