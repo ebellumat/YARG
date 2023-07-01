@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 using YARG.Data;
 using YARG.Input;
 using YARG.Pools;
@@ -110,6 +112,79 @@ namespace YARG.PlayMode
             input.StrumEvent -= StrumAction;
             input.WhammyEvent -= WhammyEvent;
         }
+
+        void OnEnable()
+        {
+            TouchSimulation.Enable();
+            EnhancedTouchSupport.Enable();
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerDown += PressFreet;
+            UnityEngine.InputSystem.EnhancedTouch.Touch.onFingerUp += ResetFingers;
+        }
+
+        void PressFreet(Finger fin)
+        {
+            Debug.Log(fin.screenPosition);
+            Debug.Log("Press");
+            Vector2 screenPos = fin.screenPosition;
+            int fret = GetFretFromScreenPos(screenPos);
+            if (fret != -1)
+            {
+                FretChangedAction(true, fret);
+                StrumAction(); 
+            }
+        }
+
+        void ResetFingers(Finger fin)
+        {
+            for (int i = 0; i < frets.Length; i++)
+            {
+                FretChangedAction(false, i);
+            }
+        }
+
+        private int GetFretFromScreenPos(Vector2 screenPos)
+        {
+            Camera[] cameras = Camera.allCameras;
+
+            for (int i = 0; i < cameras.Length; i++)
+            {
+                if (cameras[i].isActiveAndEnabled)
+                {
+                    Ray ray = cameras[i].ScreenPointToRay(screenPos);
+                    RaycastHit[] hits = Physics.RaycastAll(ray, Mathf.Infinity);
+
+                    foreach (RaycastHit hit in hits)
+                    {
+                        GameObject hitObject = hit.collider.gameObject;
+
+                        Debug.Log("We have a hit WHERE?");
+                        Debug.Log(hitObject.name);
+
+                        if (hitObject.name.Contains("Fret"))
+                        {
+                            string parentName = hitObject.transform.parent.name;
+
+                            Debug.Log("parentName" + parentName);
+
+                            Match match = Regex.Match(parentName, @"\d+");
+
+                            if (match.Success)
+                            {
+                                int fretNumber = int.Parse(match.Value);
+                                Debug.Log("We have a hit?");
+                                Debug.Log("Fret Number: " + fretNumber);
+                                return fretNumber;
+                            }
+                        } 
+                    }
+                }
+            }
+
+            return -1;
+        }
+
+
+
 
         protected override void UpdateTrack()
         {

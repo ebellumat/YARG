@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 390555847532752811}
   - component: {fileID: 3658141070864883726}
   - component: {fileID: 1522397706675016900}
+  - component: {fileID: 2781669859599784823}
   m_Layer: 6
   m_Name: Fret
   m_TagString: Untagged
@@ -86,3 +87,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2781669859599784823
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1017911190985405713}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5115471, y: 1.8684379, z: 2.161765}
+  m_Center: {x: -0.000986576, y: 0.0010590253, z: 1.0896058}
