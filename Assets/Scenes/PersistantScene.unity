@@ -236,7 +236,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 62.400024, y: -115}
+  m_AnchoredPosition: {x: 62.399902, y: -115}
   m_SizeDelta: {x: 24, y: 43.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &94345611
@@ -2045,7 +2045,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 874125451}
-  - component: {fileID: 874125450}
   m_Layer: 0
   m_Name: Discord Controller
   m_TagString: Untagged
@@ -2053,34 +2052,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &874125450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 874125449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb438f304d0d4064fb1de229c53becde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _applicationID: 1091177744416637028
-  _stableDetails:
-    DefaultDetails: Hello there ladies and gentlemen!
-    DefaultState: Are you ready to rock?
-    DefaultLargeImage: icon_stable
-    DefaultLargeText: Yet Another Rhythm Game
-  _nightlyDetails:
-    DefaultDetails: Hello there ladies and gentlemen!
-    DefaultState: Are you ready to test?
-    DefaultLargeImage: icon_nightly
-    DefaultLargeText: Yet Another Rhythm Game - Nightly Build
-  _devDetails:
-    DefaultDetails: Hello there ladies and gentlemen!
-    DefaultState: Are you ready to develop?
-    DefaultLargeImage: icon_dev
-    DefaultLargeText: Yet Another Rhythm Game - Developer Build
 --- !u!4 &874125451
 Transform:
   m_ObjectHideFlags: 0
@@ -2603,7 +2574,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1179509446}
-  - component: {fileID: 1179509445}
   m_Layer: 0
   m_Name: Twitch Controller
   m_TagString: Untagged
@@ -2611,18 +2581,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &1179509445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179509444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43233795acd9ae84690111f3010c5413, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1179509446
 Transform:
   m_ObjectHideFlags: 0
@@ -2949,7 +2907,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 62.400024, y: -115}
+  m_AnchoredPosition: {x: 62.399902, y: -115}
   m_SizeDelta: {x: 24, y: 43.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1286848471

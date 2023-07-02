@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using YARG.Song;
 using YARG.UI;
+using YARG.Util;
 using DeviceType = ManagedBass.DeviceType;
 
 namespace YARG.Audio.BASS
@@ -164,7 +165,7 @@ namespace YARG.Audio.BASS
         IEnumerator CopySfxToPersistentDataPath()
         {
             string fromPath = Application.streamingAssetsPath + "/sfx/";
-            string toPath = Application.persistentDataPath + "/sfx/";
+            string toPath = PathHelper.PersistentDataPath + "/files/";
 
             // Use the audio file names from AudioHelpers
             foreach (string fileName in AudioHelpers.SfxPaths)
@@ -257,10 +258,10 @@ namespace YARG.Audio.BASS
             _sfxSamples = new ISampleChannel[AudioHelpers.SfxPaths.Count];
 
             string baseFolder = Application.platform == RuntimePlatform.Android
-        ?   Application.persistentDataPath 
+        ? PathHelper.PersistentDataPath
         : Application.streamingAssetsPath;
 
-            string sfxFolder = Path.Combine(baseFolder, "sfx");
+            string sfxFolder = Application.platform == RuntimePlatform.Android ? Path.Combine(baseFolder, "files") :  Path.Combine(baseFolder, "sfx");
 
             foreach (string sfxFile in AudioHelpers.SfxPaths)
             {

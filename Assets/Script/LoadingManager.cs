@@ -81,7 +81,7 @@ namespace YARG
         {
             // Refreshes 1 folder (called when clicking "Refresh" on a folder in settings)
             Queue(async () => { await ScanSongFolder(path, false); });
-            // QueueSongSort();
+            QueueSongSort();
         }
 
         public void QueueSongSort()

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -32,7 +32,7 @@ namespace YARG.Song
             {
                 string hex = BitConverter.ToString(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(folder)))
                     .Replace("-", "");
-                _cacheFile = Path.Combine(PathHelper.PersistentDataPath, "caches", $"{hex}.bin");
+                _cacheFile = Path.Combine(PathHelper.PersistentDataPath, "", $"{hex}.bin");
             }
             else
             {
@@ -49,10 +49,10 @@ namespace YARG.Song
                 return;
             }
 
-            if (!Directory.Exists(Path.Combine(PathHelper.PersistentDataPath, "caches")))
-            {
-                Directory.CreateDirectory(Path.Combine(PathHelper.PersistentDataPath, "caches"));
-            }
+            //if (!Directory.Exists(Path.Combine(PathHelper.PersistentDataPath, "caches")))
+            //{
+            //    Directory.CreateDirectory(Path.Combine(PathHelper.PersistentDataPath, "caches"));
+            //}
 
             using var writer = new NullStringBinaryWriter(File.Open(_cacheFile, FileMode.Create, FileAccess.ReadWrite));
 
