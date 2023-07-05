@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
@@ -37,12 +37,8 @@ namespace YARG
 
         public SongEntry SelectedSong { get; set; }
 
-#if UNITY_EDITOR
-
         public Util.TestPlayInfo TestPlayInfo { get; private set; }
-
-#endif
-
+ 
         private void Awake()
         {
             Instance = this;

@@ -60,10 +60,62 @@ namespace YARG
 
             gameObject.SetActive(false);
 
+            AddAndroidPlayers();
+
 #if UNITY_EDITOR
             // Test Play stuff
             StartTestPlayMode();
 #endif
+        }
+
+        public void AddAndroidPlayers()
+        {
+            var info = GameManager.Instance.TestPlayInfo;
+
+            // Skip if not test play mode
+            if (!info.TestPlayMode)
+            {
+                return;
+            }
+
+            info.TestPlayMode = false;
+
+            AddTestPlayPlayer(new PlayerManager.Player
+            {
+                chosenInstrument = "guitar",
+                inputStrategy = new FiveFretInputStrategy
+                {
+                    BotMode = false
+                }
+            });
+
+            AddTestPlayPlayer(new PlayerManager.Player
+            {
+                chosenInstrument = "bass",
+                inputStrategy = new FiveFretInputStrategy
+                {
+                    BotMode = false
+                }
+            });
+
+            AddTestPlayPlayer(new PlayerManager.Player
+            {
+                chosenInstrument = "realDrums",
+                inputStrategy = new DrumsInputStrategy
+                {
+                    BotMode = false
+                }
+            });
+
+            AddTestPlayPlayer(new PlayerManager.Player
+            {
+                chosenInstrument = "vocals",
+                inputStrategy = new MicInputStrategy
+                {
+                    BotMode = false
+                }
+            });
+
         }
 
         public void Queue(Func<UniTask> func)
@@ -81,7 +133,7 @@ namespace YARG
         {
             // Refreshes 1 folder (called when clicking "Refresh" on a folder in settings)
             Queue(async () => { await ScanSongFolder(path, false); });
-            QueueSongSort();
+           //  QueueSongSort();
         }
 
         public void QueueSongSort()
@@ -184,6 +236,5 @@ namespace YARG
             PlayerManager.players.Add(p);
             p.inputStrategy.Enable();
         }
-#endif
     }
 }
